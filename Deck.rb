@@ -2,134 +2,133 @@ class Deck
   def initialize
     @turn = 0;
     @result = 0;
-    @predictions = Array.new(52)
-    @hand = Array.new(52)
+    @hand = Array.new()
     @deck = Array(0..51)
     @deck.shuffle!
 
-    @suitMap = {
-      1 => "Hearts",
-      2 => "Diamonds",
-      3 => "Spades",
-      4 => "Clubs"
-    }
+    @suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
+    @ranks = ["2", "3", "4", "5", "6", "7", "8", "9","10","Jack", "Queen", "King", "Ace"]
 
-    @rankMap = {
-      2 => "2",
-      3 => "3",
-      4 => "4",
-      5 => "5",
-      6 => "6",
-      7 => "7",
-      8 => "8",
-      9 => "9",
-      10 => "10",
-      11 => "Jack",
-      12 => "Queen",
-      13 => "King",
-      14 => "Ace",
-    }
-    @cardMap = {
-      0 => [14, 1],
-      1 => [14, 2],
-      2 => [14, 3],
-      3 => [14, 4],
+    @cardMap = Hash.new
 
-      4 => [13, 1],
-      5 => [13, 2],
-      6 => [13, 3],
-      7 => [13, 4],
+    @id = 0
 
-      8 => [12, 1],
-      9 => [12, 2],
-      10 => [12, 3],
-      11 => [12, 4],
-
-      12 => [11, 1],
-      13 => [11, 2],
-      14 => [11, 3],
-      15 => [11, 4],
-
-      16 => [10, 1],
-      17 => [10, 2],
-      18 => [10, 3],
-      19 => [10, 4],
-
-      20 => [9, 1],
-      21 => [9, 2],
-      22 => [9, 3],
-      23 => [9, 4],
-
-      24 => [8, 1],
-      25 => [8, 2],
-      26 => [8, 3],
-      27 => [8, 4],
-
-      28 => [7, 1],
-      29 => [7, 2],
-      30 => [7, 3],
-      31 => [7, 4],
-
-      32 => [6, 1],
-      33 => [6, 2],
-      34 => [6, 3],
-      35 => [6, 4],
-
-      36 => [5, 1],
-      37 => [5, 2],
-      38 => [5, 3],
-      39 => [5, 4],
-
-      40 => [4, 1],
-      41 => [4, 2],
-      42 => [4, 3],
-      43 => [4, 4],
-
-      44 => [3, 1],
-      45 => [3, 2],
-      46 => [3, 3],
-      47 => [3, 4],
-
-      48 => [2, 1],
-      49 => [2, 2],
-      50 => [2, 3],
-      51 => [2, 4],
-    }
+    # map card id to rank and suit
+    @ranks.each do |rank|
+      @suits.each do |suit|
+        @cardMap[@id] = [rank, suit]
+        @id += 1
+      end
+    end
 
   end
 
   def play()
-    for i in @turn .. 51
-      @hand.push(deck.pop)
-      reduce()
-    end
+    @turn += 1
+    puts "We are begining turn " + @turn.to_s
+    @hand.push(@deck.pop)
+    @hand.push(@deck.pop)
+    @hand.push(@deck.pop)
+    @hand.push(@deck.pop)
+
+    reduce()
+
+    puts "After turn " + @turn.to_s + " we have: "
+    printHand()
   end
 
-  def predict()
-    sum = 0
-    for n in 0 .. 1000
-      tmpHand = @hand
-      tmpDeck = @deck
-      for i in @turn .. 51
-        card = tmpDeck.sample(1)
-        tmpHand.push(card)
-        tmpDeck.delete(card)
+  def reduce()
+    first = @hand.pop
+    second = @hand.pop
+    third = @hand.pop
+    fourth = @hand.pop
+
+    # puts "The first four are: "
+    puts "draw " + @cardMap[first][0].to_s + " of " + @cardMap[first][1].to_s
+    puts "draw " + @cardMap[second][0].to_s + " of " + @cardMap[second][1].to_s
+    puts "draw " + @cardMap[third][0].to_s + " of " + @cardMap[third][1].to_s
+    puts "draw " + @cardMap[fourth][0].to_s + " of " + @cardMap[fourth][1].to_s
+
+    #check rank
+    if(@cardMap[first][0] == @cardMap[fourth][0])
+      puts "discard " + @cardMap[first][0].to_s + " of " + @cardMap[first][1].to_s
+      puts "discard " + @cardMap[second][0].to_s + " of " + @cardMap[second][1].to_s
+      puts "discard " + @cardMap[third][0].to_s + " of " + @cardMap[third][1].to_s
+      puts "discard " + @cardMap[fourth][0].to_s + " of " + @cardMap[fourth][1].to_s
+      if(@hand.length >= 4)
+        reduce()
       end
+      if(@hand.length == 2)
+        if(@deck.length >= 2)
+          draw1 = @deck.pop
+          draw2 = @deck.pop
+          @hand.push(draw1)
+          @hand.push(draw2)
+          puts "draw " + @cardMap[draw1][0].to_s + " of " + @cardMap[draw1][1].to_s
+          puts "draw " + @cardMap[draw2][0].to_s + " of " + @cardMap[draw2][1].to_s
+          reduce()
+        end
+      end
+      if(@hand.length == 0)
+        if(@deck.length > 4)
+          draw1 = @deck.pop
+          draw2 = @deck.pop
+          draw3 = @deck.pop
+          draw4 = @deck.pop
+          @hand.push(draw1)
+          @hand.push(draw2)
+          @hand.push(draw3)
+          @hand.push(draw4)
+          puts "draw " + @cardMap[draw1][0].to_s + " of " + @cardMap[draw1][1].to_s
+          puts "draw " + @cardMap[draw2][0].to_s + " of " + @cardMap[draw2][1].to_s
+          puts "draw " + @cardMap[draw3][0].to_s + " of " + @cardMap[draw3][1].to_s
+          puts "draw " + @cardMap[draw4][0].to_s + " of " + @cardMap[draw4][1].to_s
+          reduce()
+        end
+      end
+
+      #check suit
+    elsif(@cardMap[first][1] == @cardMap[fourth][1])
+      puts "discard " + @cardMap[second][0].to_s + " of " + @cardMap[second][1].to_s
+      puts "discard " + @cardMap[third][0].to_s + " of " + @cardMap[third][1].to_s
+      @hand.push(fourth)
+      @hand.push(first)
+      # puts "The suits were the same. We pushed these back in hand:"
+      # puts @cardMap[fourth][0] + " of " + @cardMap[fourth][1]
+      # puts @cardMap[first][0] + " of " + @cardMap[first][1]
+      if(@hand.length >= 4)
+        reduce()
+      end
+      if(@hand.length == 2)
+        if(@deck.length >= 2)
+          draw1 = @deck.pop
+          draw2 = @deck.pop
+          @hand.push(draw1)
+          @hand.push(draw2)
+          puts "draw " + @cardMap[draw1][0].to_s + " of " + @cardMap[draw1][1].to_s
+          puts "draw " + @cardMap[draw2][0].to_s + " of " + @cardMap[draw2][1].to_s
+          reduce()
+        end
+      end
+
+    else
+      @hand.push(first)
+      @hand.push(second)
+      @hand.push(third)
+      @hand.push(fourth)
+
     end
   end
 
-def reduce()
-  first = @hand.pop
-  second = @hand.pop
-  third = @hand.pop
-  fourth = @hand.pop
-
-end
-
-def print
-  for i in @deck
-      puts i
-      puts @rankMap[@cardMap[i][0]] + " of " + @suitMap[@cardMap[i][1]]
+  def printDeck
+    @deck.each do |i|
+      puts @cardMap[i][0] + " of " + @cardMap[i][1]
+    end
   end
-end
+
+  def printHand
+    @hand.each do |i|
+      puts @cardMap[i][0] + " of " + @cardMap[i][1]
+    end
+  end
 end
