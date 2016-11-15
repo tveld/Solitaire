@@ -5,7 +5,7 @@ class Deck
     @hand = Array.new()
     @deck = Array(0..51)
     @deck.shuffle!
-
+    @DeckSize = 52
     @suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
     @ranks = ["2", "3", "4", "5", "6", "7", "8", "9","10","Jack", "Queen", "King", "Ace"]
 
@@ -30,10 +30,11 @@ class Deck
     @hand.push(@deck.pop)
     @hand.push(@deck.pop)
     @hand.push(@deck.pop)
-
+    @DeckSize = @DeckSize - 4
+    puts @DeckSize
     reduce()
-
     puts "After turn " + @turn.to_s + " we have: "
+    puts "*****************************************"
     printHand()
   end
 
@@ -48,7 +49,7 @@ class Deck
     puts "draw " + @cardMap[second][0].to_s + " of " + @cardMap[second][1].to_s
     puts "draw " + @cardMap[third][0].to_s + " of " + @cardMap[third][1].to_s
     puts "draw " + @cardMap[fourth][0].to_s + " of " + @cardMap[fourth][1].to_s
-
+    puts "**********************************************************"
     #check rank
     if(@cardMap[first][0] == @cardMap[fourth][0])
       puts "discard " + @cardMap[first][0].to_s + " of " + @cardMap[first][1].to_s
@@ -62,10 +63,13 @@ class Deck
         if(@deck.length >= 2)
           draw1 = @deck.pop
           draw2 = @deck.pop
+          @DeckSize = @DeckSize - 2
+          puts @DeckSize
           @hand.push(draw1)
           @hand.push(draw2)
           puts "draw " + @cardMap[draw1][0].to_s + " of " + @cardMap[draw1][1].to_s
           puts "draw " + @cardMap[draw2][0].to_s + " of " + @cardMap[draw2][1].to_s
+          puts "**********TEXT BREAK**************************************"
           reduce()
         end
       end
@@ -75,6 +79,8 @@ class Deck
           draw2 = @deck.pop
           draw3 = @deck.pop
           draw4 = @deck.pop
+          @DeckSize = @DeckSize - 4
+          puts @DeckSize
           @hand.push(draw1)
           @hand.push(draw2)
           @hand.push(draw3)
@@ -83,6 +89,7 @@ class Deck
           puts "draw " + @cardMap[draw2][0].to_s + " of " + @cardMap[draw2][1].to_s
           puts "draw " + @cardMap[draw3][0].to_s + " of " + @cardMap[draw3][1].to_s
           puts "draw " + @cardMap[draw4][0].to_s + " of " + @cardMap[draw4][1].to_s
+          puts "*******************TEXT BREAK***********************************"
           reduce()
         end
       end
@@ -91,6 +98,7 @@ class Deck
     elsif(@cardMap[first][1] == @cardMap[fourth][1])
       puts "discard " + @cardMap[second][0].to_s + " of " + @cardMap[second][1].to_s
       puts "discard " + @cardMap[third][0].to_s + " of " + @cardMap[third][1].to_s
+      puts "***************************"
       @hand.push(fourth)
       @hand.push(first)
       # puts "The suits were the same. We pushed these back in hand:"
@@ -103,21 +111,34 @@ class Deck
         if(@deck.length >= 2)
           draw1 = @deck.pop
           draw2 = @deck.pop
+          @DeckSize = @DeckSize - 2
+          puts @DeckSize
           @hand.push(draw1)
           @hand.push(draw2)
           puts "draw " + @cardMap[draw1][0].to_s + " of " + @cardMap[draw1][1].to_s
           puts "draw " + @cardMap[draw2][0].to_s + " of " + @cardMap[draw2][1].to_s
+          puts "***************************************************"
           reduce()
         end
       end
 
-    else
+    elsif(@deck.length >= 4)
       @hand.push(first)
       @hand.push(second)
       @hand.push(third)
       @hand.push(fourth)
-
-    end
+      play()
+    elsif (@DeckSize == 0)
+      puts "We are out of cards in the deck!"
+      @hand.push(first)
+      @hand.push(second)
+      @hand.push(third)
+      @hand.push(fourth)
+      puts "Printing the cards left in our hand"
+      printHand()
+      puts "Printing what is left in our deck"
+      printDeck()
+  end 
   end
 
   def printDeck
