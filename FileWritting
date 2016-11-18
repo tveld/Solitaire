@@ -1,0 +1,90 @@
+      #lines is the lines within the file
+      lines = []
+      #trackers to ensure the score is saved in the correct spot within the leaderboard
+      keepscore, savethis, spot= score, 0, 0
+      flag = false;
+      print keepscore
+      puts " was the total of the cards left"
+      if File.exists?("leaders.txt")
+        File.open("leaders.txt", "r") do |f|
+          f.each_line do |line|
+            lines.push(line)
+            currentline = line.split("\t")
+            if currentline[2].to_i > score && flag == false
+              savethis = spot
+              flag = true
+            end
+            spot+=1
+          end
+        end
+        #file exists so lets start calculating stuff for it
+        if true == flag || lines.count != 5
+            time = Time.now.strftime("%d/%m/%Y %H:%M")
+            puts "What is your name?"
+            name = gets
+            while name == "\n"
+              puts "What is your name?"
+              name = gets
+            end
+            if savethis < lines.count
+              lines.insert(savethis, "#{time}\t#{name.strip}\t#{keepscore}")
+
+            else
+              puts savethis
+              puts flag
+              puts spot
+              lines.push("#{time}\t#{name.strip}\t#{keepscore}")
+            end
+            #Remove lowest sc #lines is the lines within the file
+      lines = []
+      #trackers to ensure the score is saved in the correct spot within the leaderboard
+      keepscore, savethis, spot= score, 0, 0
+      flag = false;
+      print keepscore
+      puts " was the total of the cards left"
+      if File.exists?("leaders.txt")
+        File.open("leaders.txt", "r") do |f|
+          f.each_line do |line|
+            lines.push(line)
+            currentline = line.split("\t")
+            if currentline[2].to_i > score && flag == false
+              savethis = spot
+              flag = true
+            end
+            spot+=1
+          end
+        end
+        #file exists so lets start calculating stuff for it
+        if true == flag || lines.count != 5
+            time = Time.now.strftime("%d/%m/%Y %H:%M")
+            puts "What is your name?"
+            name = gets
+            while name == "\n"
+              puts "What is your name?"
+              name = gets
+            endore
+            if lines.count > 5
+              lines.pop()
+            end
+
+            #Reprint the file
+            i = 0
+            File.open("leaders.txt", "w") do |fileWrite|
+              while i < lines.count
+                fileWrite.puts lines[i]
+                i+=1
+              end
+            end
+        end
+        else # first time writing to the scoreboard(creates the file)
+          File.open("leaders.txt", "w") do |fileWrite|
+            time = Time.now.strftime("%d/%m/%Y %H:%M")
+            puts "What is your name?"
+            name = gets
+            while name == "\n"
+              puts "What is your name?"
+              name = gets
+            end
+            fileWrite.puts "#{time}\t#{name.strip}\t#{keepscore}"
+          end
+          end
